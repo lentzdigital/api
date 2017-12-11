@@ -33,6 +33,30 @@ var LessonController = function () {
 	}
 
 	_createClass(LessonController, null, [{
+		key: 'getAll',
+		value: function getAll(req, res, next) {
+			_LessonModel2.default.find({ groupId: '2353' }, function (error, objects) {
+				console.log(objects, 'test');
+				res.json(objects);
+			});
+		}
+	}, {
+		key: 'getSingleLesson',
+		value: function getSingleLesson(req, res, next) {
+			_LessonModel2.default.find().sort({ 'start': -1 }).limit(1).exec(function (error, lesson) {
+				res.json(lesson);
+			}).catch(function (e) {
+				return next(e);
+			});
+		}
+
+		/**
+   * Calls the webuntis api to convert subject id to subject longname
+   * @param  {Number} id untis_id of subjects
+   * @return {Promise}    Resolves null if id is undefined, if not undefined it resolves longname of subject
+   */
+
+	}, {
 		key: 'getSubjectName',
 		value: function getSubjectName(id) {
 			if (typeof id === 'undefined') {
@@ -47,6 +71,13 @@ var LessonController = function () {
 				});
 			});
 		}
+
+		/**
+   * Calls the webuntis api to convert teacher id to teacher longname
+   * @param  {Number} id untis_id of teachers
+   * @return {Promise}    Resolves null if id is undefined, if not undefined it resolves longname of teacher
+   */
+
 	}, {
 		key: 'getTeacherName',
 		value: function getTeacherName(id) {
@@ -62,6 +93,13 @@ var LessonController = function () {
 				});
 			});
 		}
+
+		/**
+   * Calls the webuntis api to convert location id to location longname
+   * @param  {Number} id untis_id of locations
+   * @return {Promise}    Resolves null if id is undefined, if not undefined it resolves longname of location
+   */
+
 	}, {
 		key: 'getLocationName',
 		value: function getLocationName(id) {
@@ -77,10 +115,17 @@ var LessonController = function () {
 				});
 			});
 		}
+
+		/**
+   * Iterates over array of lesson objects, and converts subject id, teacher id and location id to strings
+   * @param  {Array} array Array of lesson objects
+   * @return {Promise}       Resolves a new array with longname instead of id's
+   */
+
 	}, {
 		key: 'convertToString',
 		value: function convertToString(array) {
-			return new Promise(function (final_resolve, final_reject) {
+			return new Promise(function (finaleResolve, finalReject) {
 				var lessons = [];
 
 				array.map(function (item, i, arr) {
@@ -93,6 +138,7 @@ var LessonController = function () {
 							    location = _ref2[2];
 
 							resolve({
+								'_id': item.untis_id,
 								'groupId': 2353,
 								'subject': subject,
 								'teacher': teacher,
@@ -104,14 +150,19 @@ var LessonController = function () {
 					}));
 				});
 
-				Promise.all(lessons).then(function (lessons_values) {
-					return final_resolve(lessons_values);
+				Promise.all(lessons).then(function (lessonValues) {
+					return finaleResolve(lessonValues);
 				});
 			});
 		}
+
+		/**
+   * Syncs mongodb with webuntis
+   */
+
 	}, {
-		key: 'getLessonIds',
-		value: function getLessonIds() {
+		key: 'sync',
+		value: function sync(req, res, next) {
 			request.get('groups/2353/lessons').then(function (response) {
 				var lessonIds = [];
 

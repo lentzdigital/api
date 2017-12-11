@@ -9,8 +9,21 @@ const request = axios.create({
 });
 
 export default class LessonController {
-	static getLessonByDay(date) {
+	static getAll(req, res, next) {
+		LessonModel.find({groupId: '2353'}, (error, objects) => {
+			console.log(objects, 'test');
+			res.json(objects);
+		});
+	}
 
+	static getSingleLesson(req, res, next) {
+		LessonModel.find()
+			.sort({'start': -1})
+			.limit(1)
+			.exec((error, lesson) => {
+				res.json(lesson);
+			})
+			.catch(e => next(e));
 	}
 
 	/**
@@ -82,7 +95,7 @@ export default class LessonController {
 	 * @return {Promise}       Resolves a new array with longname instead of id's
 	 */
 	static convertToString(array) {
-		return new Promise((final_resolve, final_reject) => {
+		return new Promise((finaleResolve, finalReject) => {
 			let lessons = [];
 
 			array.map((item, i, arr) => {
@@ -95,6 +108,7 @@ export default class LessonController {
 						])
 						.then(([subject, teacher, location]) => {
 							resolve({
+								'_id': item.untis_id,
 								'groupId': 2353,
 								'subject': subject,
 								'teacher': teacher,
@@ -106,14 +120,14 @@ export default class LessonController {
 				}));
 			});
 
-			Promise.all(lessons).then(lessons_values => final_resolve(lessons_values));
+			Promise.all(lessons).then(lessonValues => finaleResolve(lessonValues));
 		});
 	}
 
 	/**
 	 * Syncs mongodb with webuntis
 	 */
-	static sync() {
+	static sync(req, res, next) {
 		request.get('groups/2353/lessons')
 			.then((response) => {
 				let lessonIds = [];

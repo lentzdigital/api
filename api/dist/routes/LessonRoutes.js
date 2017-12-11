@@ -20,6 +20,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var router = _express2.default.Router();
 
-router.route('/crawl').post(_LessonController2.default.getLessonIds);
+router.route('/').get(_LessonController2.default.getAll), router.route('/next').get(_LessonController2.default.getSingleLesson);
+
+router.route('/crawl').post(_LessonController2.default.sync);
 
 exports.default = router;
