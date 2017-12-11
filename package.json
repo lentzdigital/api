@@ -1,0 +1,33 @@
+{
+  "name": "absence-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "joi": "^13.0.2",
+    "jsonwebtoken": "^8.1.0",
+    "mongoose": "^4.13.6"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "morgan": "^1.9.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
+}
