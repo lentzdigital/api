@@ -16,6 +16,14 @@ var _LessonRoutes = require('./LessonRoutes');
 
 var _LessonRoutes2 = _interopRequireDefault(_LessonRoutes);
 
+var _TicketRoutes = require('./TicketRoutes');
+
+var _TicketRoutes2 = _interopRequireDefault(_TicketRoutes);
+
+var _TrackRoutes = require('./TrackRoutes');
+
+var _TrackRoutes2 = _interopRequireDefault(_TrackRoutes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -24,7 +32,8 @@ router.get('/test-server', function (req, res) {
 	return res.send('OK');
 });
 
-router.use('/class', _ClassRoutes2.default);
 router.use('/lesson', _LessonRoutes2.default);
+router.use('/ticket', _TicketRoutes2.default);
+router.use('/track', _TrackRoutes2.default);
 
 exports.default = router;
