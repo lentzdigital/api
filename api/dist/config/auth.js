@@ -3,8 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var auth = {
-	'secret': 'super-secret' //<--- Note: Change to environment variable for security.
+var authConfig = {
+	'secret': 'supersecret'
 };
 
-exports.default = auth;
+exports.default = authConfig;

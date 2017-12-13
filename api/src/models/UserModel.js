@@ -1,25 +1,21 @@
 import mongoose from 'mongoose';
 
 const UserModel = new mongoose.Schema({
-	username: {
+	name: {
 		type: String,
-		unique: true,
-		required: true,
-		trim: true
+		required: true
+	},
+	email: {
+		type: String,
+		required: true
 	},
 	password: {
 		type: String,
-		required: true,
-	},
-	passwordConf: {
-		type: String,
-		required: true,
+		required: true
 	},
 	groupId: {
-		type: String,
-		unique: true,
-		required: true,
-		trim: true
+		type: Number,
+		required: true
 	}
 });
 

@@ -11,25 +11,21 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var UserModel = new _mongoose2.default.Schema({
-	username: {
+	name: {
 		type: String,
-		unique: true,
-		required: true,
-		trim: true
+		required: true
+	},
+	email: {
+		type: String,
+		required: true
 	},
 	password: {
 		type: String,
 		required: true
 	},
-	passwordConf: {
-		type: String,
-		required: true
-	},
 	groupId: {
-		type: String,
-		unique: true,
-		required: true,
-		trim: true
+		type: Number,
+		required: true
 	}
 });
 

@@ -9,6 +9,40 @@ const request = axios.create({
 });
 
 export default class LessonController {
+	static getAllByDate(req, res, next) {
+		let morning = new Date();
+			morning.setHours(0, 0, 0, 0);
+
+		let night = new Date();
+			night.setHours(23, 59, 59, 59);
+
+
+		// let night = new Date().setHours(23).setMinutes(59).setSeconds(59).toISOString();
+
+		console.log(morning);
+
+		// LessonModel.aggregate([{ 
+		// 	$match: { 
+		// 		start: date 
+		// 	} 
+		// }], (error, objects) => {
+		// 	if(error) return res.send(error);
+		// 	console.log(objects, 'currentdateobjects');
+		// 	res.json(objects)
+		// });
+
+		LessonModel.find({
+			start: {
+				$gte: morning,
+				$lte: night
+			}
+		}, (error, objects) => {
+			if(error) return res.send(error);
+			console.log(objects, 'currentdateobjects');
+			res.json(objects)
+		});
+	}
+
 	static getAll(req, res, next) {
 		LessonModel.find({groupId: '2353'}, (error, objects) => {
 			console.log(objects, 'test');

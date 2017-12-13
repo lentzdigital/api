@@ -40,6 +40,26 @@ var TrackController = function () {
 				return next(e);
 			});
 		}
+	}, {
+		key: 'updateTrack',
+		value: function updateTrack(req, res, next) {
+			var newTrack = {
+				'start': req.body.start
+			};
+
+			_TrackModel2.default.findByIdAndUpdate(req.body.trackId, {
+				$push: {
+					'tracks': newTrack
+				}
+			}, {
+				safe: true,
+				upsert: true,
+				new: true
+			}, function (error, model) {
+				if (error) console.log(error);
+				res.json(model);
+			});
+		}
 	}]);
 
 	return TrackController;

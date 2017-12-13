@@ -10,6 +10,18 @@ var _UserModel = require('../models/UserModel');
 
 var _UserModel2 = _interopRequireDefault(_UserModel);
 
+var _jsonwebtoken = require('jsonwebtoken');
+
+var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
+
+var _bcryptjs = require('bcryptjs');
+
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
+
+var _auth = require('../config/auth');
+
+var _auth2 = _interopRequireDefault(_auth);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20,18 +32,71 @@ var UserController = function () {
 	}
 
 	_createClass(UserController, null, [{
-		key: 'create',
-		value: function create(req, res, next) {
-			var user = new _UserModel2.default({
-				'username': req.body.username,
-				'password': req.body.password,
-				'groupdId': req.body.groupdId
+		key: 'createNewUser',
+		value: function createNewUser(req, res, next) {
+			var hash = _bcryptjs2.default.hashSync(req.body.password, 8);
+
+			_UserModel2.default.create({
+				'name': req.body.name,
+				'email': req.body.email,
+				'password': hash,
+				'groupId': req.body.groupId
+			}, function (error, user) {
+				if (error) return res.status(500).send('There was a problem registering the user.');
+
+				var token = _jsonwebtoken2.default.sign({ id: user._id }, _auth2.default.secret, {
+					expiresIn: 86400
+				});
+
+				res.status(200).send({
+					auth: true,
+					token: token
+				});
+			});
+		}
+	}, {
+		key: 'getToken',
+		value: function getToken(req, res) {
+			var token = req.headers['x-access-token'];
+
+			if (!token) return res.status(401).send({
+				auth: false,
+				message: 'No token provided.'
 			});
 
-			user.save().then(function (savedUser) {
-				return res.json(savedUser);
-			}).catch(function (e) {
-				return next(e, user);
+			_jsonwebtoken2.default.verify(token, _auth2.default.secret, function (err, decoded) {
+				if (err) return res.status(500).send({
+					auth: false,
+					message: 'Failed to authenticate token.'
+				});
+				res.status(200).send(decoded);
+			});
+		}
+	}, {
+		key: 'login',
+		value: function login(req, res) {
+			_UserModel2.default.findOne({ email: req.body.mail }, function (err, user) {
+				if (err) return res.status(500).send('Error on the server.');
+				if (!user) return res.status(404).send('No user found.');
+
+				var passwordIsValid = _bcryptjs2.default.compareSync(req.body.pass, user.password);
+
+				if (!passwordIsValid) return res.status(401).send({
+					auth: false,
+					token: null
+				});
+
+				var token = _jsonwebtoken2.default.sign({
+					id: user._id
+				}, _auth2.default.secret, {
+					expiresIn: 86400 // expires in 24 hours
+				});
+
+				res.status(200).send({
+					auth: true,
+					token: token,
+					userId: user._id
+				});
 			});
 		}
 	}]);

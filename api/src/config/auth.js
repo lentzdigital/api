@@ -1,5 +1,5 @@
-const auth = {
-	'secret': 'super-secret' //<--- Note: Change to environment variable for security.
-};
+const authConfig = {
+	'secret': 'supersecret'
+}
 
-export default auth;
+export default authConfig;

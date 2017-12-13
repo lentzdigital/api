@@ -15,4 +15,27 @@ export default class TrackController {
 		    .then(savedTrack => res.json(savedTrack))
 		    .catch(e => next(e));
 	}
+
+	static updateTrack(req, res, next) {
+		const newTrack = {
+			'start': req.body.start
+		}
+
+		TrackModel.findByIdAndUpdate(
+		        req.body.trackId,
+		        {
+		        	$push: {
+		        		'tracks': newTrack
+		        	}
+		        },
+		        {
+		        	safe: true, 
+		        	upsert: true, 
+		        	new: true
+		        }, (error, model) => {
+		            if(error) console.log(error);
+		            res.json(model);
+		        }
+		    );
+	}
 }

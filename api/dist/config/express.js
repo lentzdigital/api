@@ -8,6 +8,10 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
+var _expressSession = require('express-session');
+
+var _expressSession2 = _interopRequireDefault(_expressSession);
+
 var _morgan = require('morgan');
 
 var _morgan2 = _interopRequireDefault(_morgan);
@@ -24,6 +28,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var app = (0, _express2.default)();
 
+app.use((0, _expressSession2.default)({
+	secret: 'secretkey',
+	resave: true,
+	saveUninitialized: false
+}));
 app.use(_bodyParser2.default.json());
 app.use(_bodyParser2.default.urlencoded({
 	extended: true
