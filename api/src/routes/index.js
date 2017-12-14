@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/test-server', (req, res) => res.send('OK'));
 
-router.use('/lesson', LessonRoutes);
-router.use('/user', UserRoutes);
+router.use('/lesson', [verify], LessonRoutes);
+router.use('/user', [verify], UserRoutes);
 
 export default router;
