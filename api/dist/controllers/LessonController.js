@@ -287,7 +287,7 @@ var LessonController = function () {
 		}
 
 		/**
-   * Syncs mongodb with webuntis
+   * Syncs MongoDB with WebUntis.
    */
 
 	}, {

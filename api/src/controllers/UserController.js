@@ -66,7 +66,7 @@ export default class UserController {
 	static login(req, res) {
 		UserModel.findOne({ email: req.body.mail }, function (err, user) {
 		    if(err) return res.status(500).send('Error on the server.');
-		    if(!user) return res.status(404).send('No user found.');
+		    if(!user) return res.status(200).send('No user found.');
 
 		    var passwordIsValid = bcrypt.compareSync(req.body.pass, user.password);
 

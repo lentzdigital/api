@@ -238,7 +238,7 @@ export default class LessonController {
 	 }
 
 	/**
-	 * Syncs mongodb with webuntis
+	 * Syncs MongoDB with WebUntis.
 	 */
 	 static sync(req, res, next) {
 	 	request.get('groups/2353/lessons')

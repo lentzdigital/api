@@ -29,6 +29,7 @@ router.get('/test-server', function (req, res) {
 });
 
 router.use('/lesson', [_AuthMiddleware2.default], _LessonRoutes2.default);
+
 router.use('/user', _UserRoutes2.default);
 
 exports.default = router;

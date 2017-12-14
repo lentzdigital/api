@@ -101,7 +101,7 @@ var UserController = function () {
 		value: function login(req, res) {
 			_UserModel2.default.findOne({ email: req.body.mail }, function (err, user) {
 				if (err) return res.status(500).send('Error on the server.');
-				if (!user) return res.status(404).send('No user found.');
+				if (!user) return res.status(200).send('No user found.');
 
 				var passwordIsValid = _bcryptjs2.default.compareSync(req.body.pass, user.password);
 
