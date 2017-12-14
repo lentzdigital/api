@@ -131,12 +131,19 @@ var LessonController = function () {
 				});
 			});
 		}
+
+		/**
+   * Get's attendance rate by percentage
+   * @param  {Object}   req  Request object, with get parameter userId
+   * @param  {Object}   res  Response object, sends response back as json
+   * @param  {Function} next Function for next in middlewares
+   */
+
 	}, {
 		key: 'getAttendanceRate',
 		value: function getAttendanceRate(req, res, next) {
 			LessonController.countAllLessonsAttended(req.params['userId'], function (count, all) {
 				var percentage = count / all * 100;
-				console.log(percentage);
 				res.json({
 					"statistics": percentage
 				});

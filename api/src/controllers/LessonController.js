@@ -102,10 +102,15 @@ export default class LessonController {
 		})
 	}
 
+	/**
+	 * Get's attendance rate by percentage
+	 * @param  {Object}   req  Request object, with get parameter userId
+	 * @param  {Object}   res  Response object, sends response back as json
+	 * @param  {Function} next Function for next in middlewares
+	 */
 	static getAttendanceRate(req, res, next) {
 		LessonController.countAllLessonsAttended(req.params['userId'], (count, all) => {
 			let percentage = (count / all) * 100;
-			console.log(percentage);
 			res.json({
 				"statistics": percentage
 			});
