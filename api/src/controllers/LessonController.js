@@ -33,38 +33,6 @@ export default class LessonController {
 		});
 	}
 
-	static setTracked2(userId, lessons) {
-		return new Promise((resolve))
-	}
-
-	static setTracked(userId, lessons) {
-		return new Promise((resolve, reject) => {
-			let newLessons = lessons;
-
-			for(var i = 0; i < newLessons.length; i++) {
-				
-				if (typeof newLessons[i].attendees !== 'undefined' ) {
-
-					if (newLessons[i].attendees.includes(userId)) {
-						console.log('is in ', newLessons[i]._id);
-
-						console.log(newLessons[i]);
-
-						newLessons[i]["tracked"] = "virker";
-						newLessons[i]["teacher"] = "kea"
-
-						console.log(newLessons[i]);
-					}
-
-				}
-
-				if(newLessons.length == i + 1) {
-					resolve(newLessons);
-				}
-			}
-		});
-	}
-
 	static getAllByDate(req, res, next) {
 		let morning = new Date();
 		morning.setHours(0, 0, 0, 0);

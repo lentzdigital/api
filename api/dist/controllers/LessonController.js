@@ -61,39 +61,6 @@ var LessonController = function () {
 			});
 		}
 	}, {
-		key: 'setTracked2',
-		value: function setTracked2(userId, lessons) {
-			return new Promise(resolve);
-		}
-	}, {
-		key: 'setTracked',
-		value: function setTracked(userId, lessons) {
-			return new Promise(function (resolve, reject) {
-				var newLessons = lessons;
-
-				for (var i = 0; i < newLessons.length; i++) {
-
-					if (typeof newLessons[i].attendees !== 'undefined') {
-
-						if (newLessons[i].attendees.includes(userId)) {
-							console.log('is in ', newLessons[i]._id);
-
-							console.log(newLessons[i]);
-
-							newLessons[i]["tracked"] = "virker";
-							newLessons[i]["teacher"] = "kea";
-
-							console.log(newLessons[i]);
-						}
-					}
-
-					if (newLessons.length == i + 1) {
-						resolve(newLessons);
-					}
-				}
-			});
-		}
-	}, {
 		key: 'getAllByDate',
 		value: function getAllByDate(req, res, next) {
 			var morning = new Date();
