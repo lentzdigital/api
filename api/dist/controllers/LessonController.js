@@ -103,6 +103,12 @@ var LessonController = function () {
 				res.json(newObjects);
 			});
 		}
+
+		/**
+   * Counts all lessons until today
+   * @param  {Function} callback Callback function
+   */
+
 	}, {
 		key: 'countAllLessons',
 		value: function countAllLessons(callback) {

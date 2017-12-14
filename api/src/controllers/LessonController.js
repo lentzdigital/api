@@ -74,6 +74,10 @@ export default class LessonController {
 		});
 	}
 
+	/**
+	 * Counts all lessons until today
+	 * @param  {Function} callback Callback function
+	 */
 	static countAllLessons(callback) {
 		let now = new Date();
 
