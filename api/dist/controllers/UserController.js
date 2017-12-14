@@ -33,6 +33,14 @@ var UserController = function () {
 
 	_createClass(UserController, null, [{
 		key: 'createNewUser',
+
+		/**
+   * Method for creating a new user
+   * @param  {Object}   req  Request object, contains name, email, password and groupId
+   * @param  {Object}   res  Response object, sends error or authentication
+   * @param  {Function} next [description]
+   * @return {[type]}        [description]
+   */
 		value: function createNewUser(req, res, next) {
 			var hash = _bcryptjs2.default.hashSync(req.body.password, 8);
 
@@ -54,6 +62,13 @@ var UserController = function () {
 				});
 			});
 		}
+
+		/**
+   * Verifies token
+   * @param  {Object} req Request object, contains header with x-access-token set to user token
+   * @param  {Object} res Response object, sends authentication or errors
+   */
+
 	}, {
 		key: 'getToken',
 		value: function getToken(req, res) {
