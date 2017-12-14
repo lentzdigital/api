@@ -4,14 +4,13 @@ import LessonController from '../controllers/LessonController';
 const router = express.Router();
 
 router.route('/')
-	.get(LessonController.getAll)
 	.post(LessonController.addAttendee);
+
+router.route('/all/:userId')
+	.get(LessonController.getAll);
 
 router.route('/current/:userId')
 	.get(LessonController.getAllByDate);
-
-router.route('/count')
-	.get(LessonController.countAllLessons);
 
 router.route('/statistics/:userId')
 	.get(LessonController.getAttendanceRate);

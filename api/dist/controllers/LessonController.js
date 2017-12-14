@@ -102,20 +102,13 @@ var LessonController = function () {
 				}
 			}, function (error, objects) {
 				if (error) return console.log(error);
-				console.log(objects, 'objects unmodified');
+
 				var newObjects = objects.map(function (item, i, arr) {
-					var isTracked = false;
-
-					if (_typeof(item.attendees) !== undefined && item.attendees.includes(req.params.userId)) {
-						isTracked = true;
-					}
-
 					return Object.assign({}, item._doc, {
-						tracked: isTracked
+						isTracked: _typeof(item.attendees) !== undefined && item.attendees.includes(req.params.userId)
 					});
 				});
 
-				console.log(newObjects, 'new objects');
 				res.json(newObjects);
 			});
 		}
@@ -125,16 +118,29 @@ var LessonController = function () {
 			_LessonModel2.default.find({
 				groupId: '2353'
 			}, function (error, objects) {
-				console.log(objects, 'test');
-				res.json(objects);
+				if (error) return console.log(error);
+
+				var newObjects = objects.map(function (item, i, arr) {
+					return Object.assign({}, item._doc, {
+						isTracked: _typeof(item.attendees) !== undefined && item.attendees.includes(req.params.userId)
+					});
+				});
+
+				res.json(newObjects);
 			});
 		}
 	}, {
 		key: 'countAllLessons',
 		value: function countAllLessons(callback) {
+			var now = new Date();
+
 			_LessonModel2.default.find({
-				groupId: '2353'
+				groupId: '2353',
+				start: {
+					$lt: now
+				}
 			}).count(function (error, count) {
+				console.log(count);
 				callback(count);
 			});
 		}
@@ -145,8 +151,8 @@ var LessonController = function () {
 				_LessonModel2.default.find({
 					groupId: '2353',
 					attendees: userId
-
 				}).count(function (error, count) {
+					console.log(count);
 					callback(count, all);
 				});
 			});
@@ -155,8 +161,8 @@ var LessonController = function () {
 		key: 'getAttendanceRate',
 		value: function getAttendanceRate(req, res, next) {
 			LessonController.countAllLessonsAttended(req.params['userId'], function (count, all) {
-				var percentage = count / 100 * all;
-				console.log('Get Attendance Rate');
+				var percentage = count / all * 100;
+				console.log(percentage);
 				res.json({
 					"statistics": percentage
 				});

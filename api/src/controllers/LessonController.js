@@ -73,20 +73,13 @@ export default class LessonController {
 			}
 		}, (error, objects) => {
 			if(error) return console.log(error);
-			console.log(objects, 'objects unmodified');
+
 			let newObjects = objects.map((item, i, arr) => {
-				let isTracked = false;
-
-				if(typeof item.attendees !== undefined && item.attendees.includes(req.params.userId)) {
-					isTracked = true;
-				}
-
 				return Object.assign({}, item._doc, {
-					tracked: isTracked
+					isTracked: (typeof item.attendees !== undefined && item.attendees.includes(req.params.userId))
 				});
 			});
 
-			console.log(newObjects, 'new objects');
 			res.json(newObjects);
 		});
 	}
@@ -95,16 +88,29 @@ export default class LessonController {
 		LessonModel.find({ 
 			groupId: '2353'
 		}, (error, objects) => {
-			console.log(objects, 'test');
-			res.json(objects);
+			if(error) return console.log(error);
+
+			let newObjects = objects.map((item, i, arr) => {
+				return Object.assign({}, item._doc, {
+					isTracked: (typeof item.attendees !== undefined && item.attendees.includes(req.params.userId))
+				});
+			});
+
+			res.json(newObjects);
 		});
 	}
 
 	static countAllLessons(callback) {
+		let now = new Date();
+
 		LessonModel.find({ 
-			groupId: '2353'
+			groupId: '2353',
+			start: {
+				$lt: now
+			}
 		})
 		.count((error, count) => {
+			console.log(count);
 			callback(count);
 		});
 	}
@@ -114,9 +120,9 @@ export default class LessonController {
 			LessonModel.find({ 
 				groupId: '2353',
 				attendees: userId
-
 			})
 			.count((error, count) => {
+				console.log(count);
 				callback(count, all);
 			});
 		})
@@ -124,8 +130,8 @@ export default class LessonController {
 
 	static getAttendanceRate(req, res, next) {
 		LessonController.countAllLessonsAttended(req.params['userId'], (count, all) => {
-			let percentage = (count / 100) * all;
-			console.log('Get Attendance Rate');
+			let percentage = (count / all) * 100;
+			console.log(percentage);
 			res.json({
 				"statistics": percentage
 			});

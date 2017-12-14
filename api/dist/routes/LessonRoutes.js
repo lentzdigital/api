@@ -16,11 +16,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var router = _express2.default.Router();
 
-router.route('/').get(_LessonController2.default.getAll).post(_LessonController2.default.addAttendee);
+router.route('/').post(_LessonController2.default.addAttendee);
+
+router.route('/all/:userId').get(_LessonController2.default.getAll);
 
 router.route('/current/:userId').get(_LessonController2.default.getAllByDate);
-
-router.route('/count').get(_LessonController2.default.countAllLessons);
 
 router.route('/statistics/:userId').get(_LessonController2.default.getAttendanceRate);
 
