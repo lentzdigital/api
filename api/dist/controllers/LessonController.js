@@ -36,6 +36,13 @@ var LessonController = function () {
 
 	_createClass(LessonController, null, [{
 		key: 'addAttendee',
+
+		/**
+   * Add userId to attendees subdocument on lesson
+   * @param {Object}   req  Request object, contains userId and lessonId.
+   * @param {Object}   res  Response object, sends a response with updated model.
+   * @param {Function} next Next function for middlewares
+   */
 		value: function addAttendee(req, res, next) {
 			var userId = req.body.userId,
 			    lessonId = req.body.lessonId;
@@ -244,7 +251,6 @@ var LessonController = function () {
 	}, {
 		key: 'convertToString',
 		value: function convertToString(array) {
-			console.log('In convertToString method');
 			return new Promise(function (finaleResolve, finalReject) {
 				var lessons = [];
 

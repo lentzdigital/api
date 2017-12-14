@@ -9,6 +9,12 @@ const request = axios.create({
 });
 
 export default class LessonController {
+	/**
+	 * Add userId to attendees subdocument on lesson
+	 * @param {Object}   req  Request object, contains userId and lessonId.
+	 * @param {Object}   res  Response object, sends a response with updated model.
+	 * @param {Function} next Next function for middlewares
+	 */
 	static addAttendee(req, res, next) {
 		let userId   = req.body.userId,
 		lessonId = req.body.lessonId;
@@ -207,7 +213,6 @@ export default class LessonController {
 	 * @return {Promise}       Resolves a new array with longname instead of id's
 	 */
 	 static convertToString(array) {
-	 	console.log('In convertToString method');
 	 	return new Promise((finaleResolve, finalReject) => {
 	 		let lessons = [];
 
