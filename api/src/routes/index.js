@@ -8,8 +8,6 @@ const router = express.Router();
 router.get('/test-server', (req, res) => res.send('OK'));
 
 router.use('/lesson', LessonRoutes);
-router.use('/ticket', TicketRoutes);
-router.use('/track', [verify], TrackRoutes);
 router.use('/user', UserRoutes);
 
 export default router;

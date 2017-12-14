@@ -29,8 +29,6 @@ router.get('/test-server', function (req, res) {
 });
 
 router.use('/lesson', _LessonRoutes2.default);
-router.use('/ticket', TicketRoutes);
-router.use('/track', [_AuthMiddleware2.default], TrackRoutes);
 router.use('/user', _UserRoutes2.default);
 
 exports.default = router;
