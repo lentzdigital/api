@@ -118,6 +118,13 @@ var LessonController = function () {
 				callback(count);
 			});
 		}
+
+		/**
+   * Count all the lessons attended by userId
+   * @param  {Number}   userId   userId
+   * @param  {Function} callback Callback function
+   */
+
 	}, {
 		key: 'countAllLessonsAttended',
 		value: function countAllLessonsAttended(userId, callback) {

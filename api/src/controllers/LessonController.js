@@ -89,6 +89,11 @@ export default class LessonController {
 		});
 	}
 
+	/**
+	 * Count all the lessons attended by userId
+	 * @param  {Number}   userId   userId
+	 * @param  {Function} callback Callback function
+	 */
 	static countAllLessonsAttended(userId, callback) {
 		LessonController.countAllLessons((all) => {
 			LessonModel.find({ 
