@@ -18,8 +18,5 @@ router.route('/statistics/:userId')
 router.route('/crawl')
 	.post(LessonController.sync);
 
-// router.route('/single/:id')
-// 	.get(LessonController.getSingleLesson);
-
 export default router;
 

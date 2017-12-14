@@ -26,7 +26,4 @@ router.route('/statistics/:userId').get(_LessonController2.default.getAttendance
 
 router.route('/crawl').post(_LessonController2.default.sync);
 
-// router.route('/single/:id')
-// 	.get(LessonController.getSingleLesson);
-
 exports.default = router;
