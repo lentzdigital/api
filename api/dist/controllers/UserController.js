@@ -33,6 +33,14 @@ var UserController = function () {
 
 	_createClass(UserController, null, [{
 		key: 'createNewUser',
+
+		/**
+   * Method for creating a new user
+   * @param  {Object}   req  Request object, contains name, email, password and groupId
+   * @param  {Object}   res  Response object, sends error or authentication
+   * @param  {Function} next [description]
+   * @return {[type]}        [description]
+   */
 		value: function createNewUser(req, res, next) {
 			var hash = _bcryptjs2.default.hashSync(req.body.password, 8);
 
@@ -54,6 +62,13 @@ var UserController = function () {
 				});
 			});
 		}
+
+		/**
+   * Verifies token
+   * @param  {Object} req Request object, contains header with x-access-token set to user token
+   * @param  {Object} res Response object, sends authentication or errors
+   */
+
 	}, {
 		key: 'getToken',
 		value: function getToken(req, res) {
@@ -72,6 +87,15 @@ var UserController = function () {
 				res.status(200).send(decoded);
 			});
 		}
+
+		/**
+   * Method for login. Validates with database by comparing hashed password & email.
+   * @param  {Object} req Request object, should contain 
+   *                  email and password in body, formatted as JSON
+   * @param  {Object} res Response object, rejects or accepts user credentials.
+   * @return {Object}     JSON object with either token, or permission denied.
+   */
+
 	}, {
 		key: 'login',
 		value: function login(req, res) {
@@ -89,7 +113,7 @@ var UserController = function () {
 				var token = _jsonwebtoken2.default.sign({
 					id: user._id
 				}, _auth2.default.secret, {
-					expiresIn: 86400 // expires in 24 hours
+					expiresIn: 86400
 				});
 
 				res.status(200).send({

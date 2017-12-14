@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth';
 
+/**
+ * Middleware, makes sure that the current user has a valid token
+ * @param  {Object}   req  Request object, has x-access-token sent with headers
+ * @param  {Object}   res  Response objects, authenticate user or error
+ * @param  {Function} next Function for next middleware
+ */
 export default function verifyToken(req, res, next) {
 	let token = req.headers['x-access-token'];
 

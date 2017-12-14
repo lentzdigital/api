@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _axios = require('axios');
@@ -33,6 +35,41 @@ var LessonController = function () {
 	}
 
 	_createClass(LessonController, null, [{
+		key: 'addAttendee',
+
+		/**
+   * Add userId to attendees subdocument on lesson
+   * @param {Object}   req  Request object, contains userId and lessonId.
+   * @param {Object}   res  Response object, sends a response with updated model.
+   * @param {Function} next Next function for middlewares
+   */
+		value: function addAttendee(req, res, next) {
+			var userId = req.body.userId,
+			    lessonId = req.body.lessonId;
+
+			_LessonModel2.default.findByIdAndUpdate(lessonId, {
+				$push: {
+					'attendees': userId
+				}
+			}, {
+				safe: true,
+				upsert: true,
+				new: true
+			}, function (error, model) {
+				if (error) console.log(error);
+				res.json(model);
+			});
+		}
+
+		/**
+   * Gets all lessons for current day.
+   * @param  {[type]}   req  [description]
+   * @param  {[type]}   res  [description]
+   * @param  {Function} next [description]
+   * @return {[type]}        [description]
+   */
+
+	}, {
 		key: 'getAllByDate',
 		value: function getAllByDate(req, res, next) {
 			var morning = new Date();
@@ -41,46 +78,105 @@ var LessonController = function () {
 			var night = new Date();
 			night.setHours(23, 59, 59, 59);
 
-			// let night = new Date().setHours(23).setMinutes(59).setSeconds(59).toISOString();
-
-			console.log(morning);
-
-			// LessonModel.aggregate([{ 
-			// 	$match: { 
-			// 		start: date 
-			// 	} 
-			// }], (error, objects) => {
-			// 	if(error) return res.send(error);
-			// 	console.log(objects, 'currentdateobjects');
-			// 	res.json(objects)
-			// });
-
 			_LessonModel2.default.find({
 				start: {
 					$gte: morning,
 					$lte: night
 				}
 			}, function (error, objects) {
-				if (error) return res.send(error);
-				console.log(objects, 'currentdateobjects');
-				res.json(objects);
+				if (error) return console.log(error);
+
+				var newObjects = objects.map(function (item, i, arr) {
+					return Object.assign({}, item._doc, {
+						isTracked: _typeof(item.attendees) !== undefined && item.attendees.includes(req.params.userId)
+					});
+				});
+
+				res.json(newObjects);
 			});
 		}
+
+		/**
+   * Get's all lessons, and insert new property which is either true or false based on attendance.
+   * @param  {req}   req  Request object, get parameter userId
+   * @param  {Object}   res  Response object, sends json with all lessons
+   * @param  {Function} next Function for next middleware
+   */
+
 	}, {
 		key: 'getAll',
 		value: function getAll(req, res, next) {
-			_LessonModel2.default.find({ groupId: '2353' }, function (error, objects) {
-				console.log(objects, 'test');
-				res.json(objects);
+			_LessonModel2.default.find({
+				groupId: '2353'
+			}, function (error, objects) {
+				if (error) return console.log(error);
+
+				var newObjects = objects.map(function (item, i, arr) {
+					return Object.assign({}, item._doc, {
+						isTracked: _typeof(item.attendees) !== undefined && item.attendees.includes(req.params.userId)
+					});
+				});
+
+				res.json(newObjects);
 			});
 		}
+
+		/**
+   * Counts all lessons until today
+   * @param  {Function} callback Callback function
+   */
+
 	}, {
-		key: 'getSingleLesson',
-		value: function getSingleLesson(req, res, next) {
-			_LessonModel2.default.find().sort({ 'start': -1 }).limit(1).exec(function (error, lesson) {
-				res.json(lesson);
-			}).catch(function (e) {
-				return next(e);
+		key: 'countAllLessons',
+		value: function countAllLessons(callback) {
+			var now = new Date();
+
+			_LessonModel2.default.find({
+				groupId: '2353',
+				start: {
+					$lt: now
+				}
+			}).count(function (error, count) {
+				console.log(count);
+				callback(count);
+			});
+		}
+
+		/**
+   * Count all the lessons attended by userId
+   * @param  {Number}   userId   userId
+   * @param  {Function} callback Callback function
+   */
+
+	}, {
+		key: 'countAllLessonsAttended',
+		value: function countAllLessonsAttended(userId, callback) {
+			LessonController.countAllLessons(function (all) {
+				_LessonModel2.default.find({
+					groupId: '2353',
+					attendees: userId
+				}).count(function (error, count) {
+					console.log(count);
+					callback(count, all);
+				});
+			});
+		}
+
+		/**
+   * Get's attendance rate by percentage
+   * @param  {Object}   req  Request object, with get parameter userId
+   * @param  {Object}   res  Response object, sends response back as json
+   * @param  {Function} next Function for next in middlewares
+   */
+
+	}, {
+		key: 'getAttendanceRate',
+		value: function getAttendanceRate(req, res, next) {
+			LessonController.countAllLessonsAttended(req.params['userId'], function (count, all) {
+				var percentage = count / all * 100;
+				res.json({
+					"statistics": percentage
+				});
 			});
 		}
 
@@ -220,7 +316,6 @@ var LessonController = function () {
 			}).then(function (url) {
 				request.get(url).then(function (response) {
 					LessonController.convertToString(response.data).then(function (lessons) {
-						console.log(lessons, '----------- last operation');
 						_LessonModel2.default.insertMany(lessons).then(function (insertedLessons) {
 							return res.json(insertedLessons);
 						}).catch(function (e) {

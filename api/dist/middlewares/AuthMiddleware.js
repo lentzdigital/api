@@ -15,6 +15,12 @@ var _auth2 = _interopRequireDefault(_auth);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Middleware, makes sure that the current user has a valid token
+ * @param  {Object}   req  Request object, has x-access-token sent with headers
+ * @param  {Object}   res  Response objects, authenticate user or error
+ * @param  {Function} next Function for next middleware
+ */
 function verifyToken(req, res, next) {
 	var token = req.headers['x-access-token'];
 

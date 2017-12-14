@@ -16,14 +16,6 @@ var _LessonRoutes = require('./LessonRoutes');
 
 var _LessonRoutes2 = _interopRequireDefault(_LessonRoutes);
 
-var _TicketRoutes = require('./TicketRoutes');
-
-var _TicketRoutes2 = _interopRequireDefault(_TicketRoutes);
-
-var _TrackRoutes = require('./TrackRoutes');
-
-var _TrackRoutes2 = _interopRequireDefault(_TrackRoutes);
-
 var _AuthMiddleware = require('../middlewares/AuthMiddleware');
 
 var _AuthMiddleware2 = _interopRequireDefault(_AuthMiddleware);
@@ -37,8 +29,6 @@ router.get('/test-server', function (req, res) {
 });
 
 router.use('/lesson', [_AuthMiddleware2.default], _LessonRoutes2.default);
-router.use('/ticket', _TicketRoutes2.default);
-router.use('/track', [_AuthMiddleware2.default], _TrackRoutes2.default);
 router.use('/user', _UserRoutes2.default);
 
 exports.default = router;
