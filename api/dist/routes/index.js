@@ -36,7 +36,7 @@ router.get('/test-server', function (req, res) {
   return res.send('OK');
 });
 
-router.use('/lesson', [_AuthMiddleware2.default], _LessonRoutes2.default);
+router.use('/lesson', _LessonRoutes2.default);
 router.use('/ticket', _TicketRoutes2.default);
 router.use('/track', [_AuthMiddleware2.default], _TrackRoutes2.default);
 router.use('/user', _UserRoutes2.default);

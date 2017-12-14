@@ -44,6 +44,13 @@ export default class UserController {
 		});
 	}
 
+	/**
+	 * Method for login. Validates with database by comparing hashed password & email.
+	 * @param  {Object} req Request object, should contain 
+	 *                  email and password in body, formatted as JSON
+	 * @param  {Object} res Response object, rejects or accepts user credentials.
+	 * @return {Object}     JSON object with either token, or permission denied.
+	 */
 	static login(req, res) {
 		UserModel.findOne({ email: req.body.mail }, function (err, user) {
 		    if(err) return res.status(500).send('Error on the server.');
@@ -59,7 +66,7 @@ export default class UserController {
 		    var token = jwt.sign({
 		    	id: user._id 
 		    }, authConfig.secret, {
-		      	expiresIn: 86400 // expires in 24 hours
+		      	expiresIn: 86400
 		    });
 
 		    res.status(200).send({ 

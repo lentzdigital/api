@@ -29,6 +29,10 @@ var LessonModel = new _mongoose2.default.Schema({
 	location: {
 		type: String
 	},
+	attendees: [{
+		type: String,
+		unique: true
+	}],
 	start: {
 		type: Date,
 		required: true

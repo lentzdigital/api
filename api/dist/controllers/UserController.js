@@ -72,6 +72,15 @@ var UserController = function () {
 				res.status(200).send(decoded);
 			});
 		}
+
+		/**
+   * Method for login. Validates with database by comparing hashed password & email.
+   * @param  {Object} req Request object, should contain 
+   *                  email and password in body, formatted as JSON
+   * @param  {Object} res Response object, rejects or accepts user credentials.
+   * @return {Object}     JSON object with either token, or permission denied.
+   */
+
 	}, {
 		key: 'login',
 		value: function login(req, res) {
@@ -89,7 +98,7 @@ var UserController = function () {
 				var token = _jsonwebtoken2.default.sign({
 					id: user._id
 				}, _auth2.default.secret, {
-					expiresIn: 86400 // expires in 24 hours
+					expiresIn: 86400
 				});
 
 				res.status(200).send({

@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _axios = require('axios');
@@ -33,6 +35,58 @@ var LessonController = function () {
 	}
 
 	_createClass(LessonController, null, [{
+		key: 'addAttendee',
+		value: function addAttendee(req, res, next) {
+			var userId = req.body.userId,
+			    lessonId = req.body.lessonId;
+
+			_LessonModel2.default.findByIdAndUpdate(lessonId, {
+				$push: {
+					'attendees': userId
+				}
+			}, {
+				safe: true,
+				upsert: true,
+				new: true
+			}, function (error, model) {
+				if (error) console.log(error);
+				res.json(model);
+			});
+		}
+	}, {
+		key: 'setTracked2',
+		value: function setTracked2(userId, lessons) {
+			return new Promise(resolve);
+		}
+	}, {
+		key: 'setTracked',
+		value: function setTracked(userId, lessons) {
+			return new Promise(function (resolve, reject) {
+				var newLessons = lessons;
+
+				for (var i = 0; i < newLessons.length; i++) {
+
+					if (typeof newLessons[i].attendees !== 'undefined') {
+
+						if (newLessons[i].attendees.includes(userId)) {
+							console.log('is in ', newLessons[i]._id);
+
+							console.log(newLessons[i]);
+
+							newLessons[i]["tracked"] = "virker";
+							newLessons[i]["teacher"] = "kea";
+
+							console.log(newLessons[i]);
+						}
+					}
+
+					if (newLessons.length == i + 1) {
+						resolve(newLessons);
+					}
+				}
+			});
+		}
+	}, {
 		key: 'getAllByDate',
 		value: function getAllByDate(req, res, next) {
 			var morning = new Date();
@@ -41,46 +95,71 @@ var LessonController = function () {
 			var night = new Date();
 			night.setHours(23, 59, 59, 59);
 
-			// let night = new Date().setHours(23).setMinutes(59).setSeconds(59).toISOString();
-
-			console.log(morning);
-
-			// LessonModel.aggregate([{ 
-			// 	$match: { 
-			// 		start: date 
-			// 	} 
-			// }], (error, objects) => {
-			// 	if(error) return res.send(error);
-			// 	console.log(objects, 'currentdateobjects');
-			// 	res.json(objects)
-			// });
-
 			_LessonModel2.default.find({
 				start: {
 					$gte: morning,
 					$lte: night
 				}
 			}, function (error, objects) {
-				if (error) return res.send(error);
-				console.log(objects, 'currentdateobjects');
-				res.json(objects);
+				if (error) return console.log(error);
+				console.log(objects, 'objects unmodified');
+				var newObjects = objects.map(function (item, i, arr) {
+					var isTracked = false;
+
+					if (_typeof(item.attendees) !== undefined && item.attendees.includes(req.params.userId)) {
+						isTracked = true;
+					}
+
+					return Object.assign({}, item._doc, {
+						tracked: isTracked
+					});
+				});
+
+				console.log(newObjects, 'new objects');
+				res.json(newObjects);
 			});
 		}
 	}, {
 		key: 'getAll',
 		value: function getAll(req, res, next) {
-			_LessonModel2.default.find({ groupId: '2353' }, function (error, objects) {
+			_LessonModel2.default.find({
+				groupId: '2353'
+			}, function (error, objects) {
 				console.log(objects, 'test');
 				res.json(objects);
 			});
 		}
 	}, {
-		key: 'getSingleLesson',
-		value: function getSingleLesson(req, res, next) {
-			_LessonModel2.default.find().sort({ 'start': -1 }).limit(1).exec(function (error, lesson) {
-				res.json(lesson);
-			}).catch(function (e) {
-				return next(e);
+		key: 'countAllLessons',
+		value: function countAllLessons(callback) {
+			_LessonModel2.default.find({
+				groupId: '2353'
+			}).count(function (error, count) {
+				callback(count);
+			});
+		}
+	}, {
+		key: 'countAllLessonsAttended',
+		value: function countAllLessonsAttended(userId, callback) {
+			LessonController.countAllLessons(function (all) {
+				_LessonModel2.default.find({
+					groupId: '2353',
+					attendees: userId
+
+				}).count(function (error, count) {
+					callback(count, all);
+				});
+			});
+		}
+	}, {
+		key: 'getAttendanceRate',
+		value: function getAttendanceRate(req, res, next) {
+			LessonController.countAllLessonsAttended(req.params['userId'], function (count, all) {
+				var percentage = count / 100 * all;
+				console.log('Get Attendance Rate');
+				res.json({
+					"statistics": percentage
+				});
 			});
 		}
 
@@ -159,6 +238,7 @@ var LessonController = function () {
 	}, {
 		key: 'convertToString',
 		value: function convertToString(array) {
+			console.log('In convertToString method');
 			return new Promise(function (finaleResolve, finalReject) {
 				var lessons = [];
 
@@ -220,7 +300,6 @@ var LessonController = function () {
 			}).then(function (url) {
 				request.get(url).then(function (response) {
 					LessonController.convertToString(response.data).then(function (lessons) {
-						console.log(lessons, '----------- last operation');
 						_LessonModel2.default.insertMany(lessons).then(function (insertedLessons) {
 							return res.json(insertedLessons);
 						}).catch(function (e) {
