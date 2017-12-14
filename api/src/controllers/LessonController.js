@@ -33,6 +33,13 @@ export default class LessonController {
 		});
 	}
 
+	/**
+	 * Gets all lessons for current day.
+	 * @param  {[type]}   req  [description]
+	 * @param  {[type]}   res  [description]
+	 * @param  {Function} next [description]
+	 * @return {[type]}        [description]
+	 */
 	static getAllByDate(req, res, next) {
 		let morning = new Date();
 		morning.setHours(0, 0, 0, 0);
@@ -58,6 +65,12 @@ export default class LessonController {
 		});
 	}
 
+	/**
+	 * Get's all lessons, and insert new property which is either true or false based on attendance.
+	 * @param  {req}   req  Request object, get parameter userId
+	 * @param  {Object}   res  Response object, sends json with all lessons
+	 * @param  {Function} next Function for next middleware
+	 */
 	static getAll(req, res, next) {
 		LessonModel.find({ 
 			groupId: '2353'

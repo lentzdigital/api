@@ -60,6 +60,15 @@ var LessonController = function () {
 				res.json(model);
 			});
 		}
+
+		/**
+   * Gets all lessons for current day.
+   * @param  {[type]}   req  [description]
+   * @param  {[type]}   res  [description]
+   * @param  {Function} next [description]
+   * @return {[type]}        [description]
+   */
+
 	}, {
 		key: 'getAllByDate',
 		value: function getAllByDate(req, res, next) {
@@ -86,6 +95,14 @@ var LessonController = function () {
 				res.json(newObjects);
 			});
 		}
+
+		/**
+   * Get's all lessons, and insert new property which is either true or false based on attendance.
+   * @param  {req}   req  Request object, get parameter userId
+   * @param  {Object}   res  Response object, sends json with all lessons
+   * @param  {Function} next Function for next middleware
+   */
+
 	}, {
 		key: 'getAll',
 		value: function getAll(req, res, next) {
